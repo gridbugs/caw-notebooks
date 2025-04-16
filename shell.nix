@@ -6,21 +6,25 @@
 } }:
 
 pkgs.mkShell rec {
-  packages = with pkgs; [
-    (rust-bin.stable.latest.default.override {
-      extensions = [ "rust-src" "rust-analysis" ];
-      targets = [ "wasm32-unknown-unknown" ];
-    })
-    evcxr
-    rust-analyzer
-    python3Packages.jupyterlab
-    python3Packages.ipython
-    python3Packages.jupyter-lsp
-    python3Packages.python-lsp-server
-    pkg-config
-    udev
-    alsa-lib
-  ];
+  packages = with pkgs;
+    [
+      (rust-bin.stable.latest.default.override {
+        extensions = [ "rust-src" "rust-analysis" ];
+        targets = [ "wasm32-unknown-unknown" ];
+      })
+      evcxr
+      rust-analyzer
+      python3Packages.jupyterlab
+      python3Packages.ipython
+      python3Packages.jupyter-lsp
+      python3Packages.python-lsp-server
+    ] ++ (if pkgs.stdenv.isLinux then [
+      pkg-config
+      udev
+      alsa-lib
+
+    ] else
+      [ ]);
 
   shellHook = ''
     JUPYTER_DIR=$PWD/.jupyter
