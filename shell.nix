@@ -1,41 +1,47 @@
-{ pkgs ? import <nixpkgs> {
-  overlays = [
-    (import (builtins.fetchTarball
-      "https://github.com/oxalica/rust-overlay/archive/master.tar.gz"))
-  ];
-} }:
+{
+  pkgs ? import <nixpkgs> {
+    overlays = [(import (builtins.fetchTarball "https://github.com/oxalica/rust-overlay/archive/master.tar.gz"))];
+  }
+}:
 
 pkgs.mkShell rec {
-  packages = with pkgs;
-    [
-      (rust-bin.stable.latest.default.override {
-        extensions = [ "rust-src" "rust-analysis" ];
-        targets = [ "wasm32-unknown-unknown" ];
-      })
-      evcxr
-      rust-analyzer
-      python3Packages.jupyterlab
-      python3Packages.ipython
-      python3Packages.jupyter-lsp
-      python3Packages.python-lsp-server
-    ] ++ (if pkgs.stdenv.isLinux then [
-      pkg-config
-      udev
-      alsa-lib
-
-    ] else
-      [ ]);
-
-  shellHook = ''
-    JUPYTER_DIR=$PWD/.jupyter
-    mkdir -p $JUPYTER_DIR/app
-    ${pkgs.evcxr}/bin/evcxr_jupyter --install
-
-    export JUPYTER_PATH=$JUPYTER_DIR
-  '';
+  packages = with pkgs; [
+    cmake
+    (rust-bin.stable.latest.default.override {
+      extensions = [ "rust-src" "rust-analysis" ];
+      targets = [ "wasm32-unknown-unknown" ];
+    })
+    llvmPackages.bintools
+    rustPlatform.rustLibSrc
+    rust-analyzer
+    cargo-watch
+    rustfmt
+    pkg-config
+    udev
+    alsaLib
+    libao
+    openal
+    libpulseaudio
+    fontconfig
+    libxkbcommon
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
+    vulkan-loader
+    vulkan-tools
+    libGL
+    bzip2
+    nodejs
+    wasm-pack
+    openssl
+    SDL2
+    SDL2_ttf
+  ];
 
   # Allows rust-analyzer to find the rust source
   RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
 
+  # Without this graphical frontends can't find the GPU adapters
   LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath packages}";
 }
