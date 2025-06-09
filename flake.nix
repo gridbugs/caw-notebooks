@@ -16,29 +16,19 @@
         };
         caw = rustPlatform.buildRustPackage {
           pname = "caw_midi_udp_widgets_app";
-          version = "0.1.0";
+          version = "0.2.0";
 
           src = pkgs.fetchCrate {
             pname = "caw_midi_udp_widgets_app";
-            version = "0.1.0";
-            hash = "sha256-lnpy1qPy84y2swfp4WPDsVWx9a7tRP+iGHtuGL8p8mA=";
+            version = "0.2.0";
+            hash = "sha256-fp37wNpA8uHQTI0ycm2WqeHDe8WrhK9wO4N3xkBeHiw=";
           };
 
           useFetchCargoVendor = true;
-          cargoHash = "sha256-n3JYXs63Esrbm4CcsIkhETSip8SKIFmC8MwNB6OzLmg=";
+          cargoHash = "sha256-NH7mE8yo5tBlwDiTPFAAx1CETAlkUlT+4ovhjVfUHbQ=";
 
-          nativeBuildInputs = [ pkgs.pkg-config ]
-            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.CoreServices
-              pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
-            ];
-
-          buildInputs = with pkgs;
-            [ SDL2 SDL2_ttf ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.CoreServices
-              pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
-            ];
-
+          nativeBuildInputs = [ pkgs.pkg-config ];
+          buildInputs = with pkgs; [ SDL2 SDL2_ttf ];
           doCheck = false;
         };
       in with pkgs; {
