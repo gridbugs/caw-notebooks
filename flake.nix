@@ -52,7 +52,7 @@
         devShell = mkShell rec {
           buildInputs = [
             caw_midi_udp_widgets_app
-            caw_viz_udp_app
+            #caw_viz_udp_app
             (rust-bin.stable.latest.default.override {
               extensions = [ "rust-src" "rust-analysis" ];
             })
